@@ -1,0 +1,8 @@
+name: HubGadgets
+author: pauhull
+version: "1.0"
+main: de.pauhull.hubgadgets.HubGadgets
+softdepend: [MCMoney]
+
+commands:
+  gadgets:

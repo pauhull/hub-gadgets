@@ -1,0 +1,75 @@
+# MySQL config
+MySQL:
+  SSL: false
+  Host: "127.0.0.1"
+  Port: "3306"
+  Database: "database"
+  User: "root"
+  Password: ""
+
+# Language & Price config
+Prefix: "&5&lGadgets&8&l »&7 "
+
+ClickToSelect: "\n%STATUS%\n&7Klicken, um auszuwählen\n "
+ClickToUnselect: "\n&a&lAusgewählt\n&7Klicken, um abzuwählen\n "
+ClickToBuy: "\n&7Dieses Gadget für &e%PRICE%&7 kaufen?\n "
+Free: "&a&lKostenlos"
+Bought: "&a&lGekauft"
+NotEnoughMoney: "&cDir fehlen %MISSING%"
+SuccessfullyBought: "&aGadget erfolgreich gekauft"
+
+BuyInventory:
+  Title: "&9&lGadget kaufen?"
+  Messages:
+    GadgetAlreadyBought: "&cDu hast dieses Gadget schon"
+  Item:
+    Buy: "&a&lKAUFEN&8 (%PRICE%)"
+    Cancel: "&c&lABBRECHEN"
+
+MainInventory:
+  Title: "&5&lGadgets"
+  Item:
+    Boots: "&bSchuhe"
+    Pets: "&aHaustiere"
+    Balloons: "&dBallons"
+    Skulls: "&eKöpfe"
+    Ranks: "&6Ränge"
+
+BootsInventory:
+  Title: "&2&lSchuhe"
+  Item:
+    EmeraldBoots:
+      Name: "&aEmerald Boots"
+      Price:
+        Type: COINS
+        Value: 0
+    EnderBoots:
+      Name: "&5Ender Boots"
+      Price:
+        Type: COINS
+        Value: 0
+    HeartBoots:
+      Name: "&4Heart Boots"
+      Price:
+        Type: COINS
+        Value: 0
+    LavaBoots:
+      Name: "&cLava Boots"
+      Price:
+        Type: COINS
+        Value: 0    L
+    RainbowBoots:
+      Name: "&4&lR&c&la&6&li&e&ln&2&lb&a&lo&b&lw&r &3&lB&9&lo&d&lo&5&lt&4&ls"
+      Price:
+        Type: CREDITS
+        Value: 0
+    PotionBoots:
+      Name: "&3Potion Boots"
+      Price:
+        Type: COINS
+        Value: 0
+    WaterBoots:
+      Name: "&9Water Boots"
+      Price:
+        Type: COINS
+        Value: 0
