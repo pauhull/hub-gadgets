@@ -5,6 +5,7 @@ package de.pauhull.hubgadgets.gadgets.boots;
 // Package de.pauhull.hubgadgets.manager
 
 import de.pauhull.hubgadgets.HubGadgets;
+import de.pauhull.hubgadgets.gadgets.Gadget;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -40,7 +41,7 @@ public class BootsManager implements Listener {
 
             for (Player player : Bukkit.getOnlinePlayers()) {
 
-                Boots boots = Boots.getBoots(player);
+                Boots boots = Boots.getBootsByPlayer(player);
 
                 if (boots != null) {
                     boots.playEffect(player);
@@ -55,7 +56,7 @@ public class BootsManager implements Listener {
 
         if (event.getInventory().getType() == InventoryType.CRAFTING && event.getSlot() == 36) { // boots slot
 
-            Boots boots = Boots.getBoots(event.getCurrentItem());
+            Boots boots = Boots.getBootsByItem(event.getCurrentItem());
 
             if (boots != null) {
                 event.setCancelled(true);
@@ -66,7 +67,7 @@ public class BootsManager implements Listener {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
 
-        Boots boots = Boots.getBoots(event.getItemDrop().getItemStack());
+        Boots boots = Boots.getBootsByItem(event.getItemDrop().getItemStack());
 
         if (boots != null) {
             event.setCancelled(true);
@@ -82,7 +83,7 @@ public class BootsManager implements Listener {
         while (iterator.hasNext()) {
 
             ItemStack stack = iterator.next();
-            Boots boots = Boots.getBoots(stack);
+            Boots boots = Boots.getBootsByItem(stack);
 
             if (boots != null) {
                 iterator.remove();
@@ -93,12 +94,47 @@ public class BootsManager implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
 
-        //TODO: re-equip boots
+        Player player = event.getPlayer();
+
+        HubGadgets.getInstance().getDatabase().getEquipped(player.getUniqueId(), equipped -> {
+
+            for (Gadget gadget : equipped) {
+
+                if (gadget instanceof Boots) {
+                    Boots boots = (Boots) gadget;
+
+                    Bukkit.getScheduler().runTask(HubGadgets.getInstance(), () -> {
+                        player.getInventory().setBoots(boots.getItem());
+                    });
+                }
+            }
+        });
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        //TODO: equip boots
+        Player player = event.getPlayer();
+
+        HubGadgets.getInstance().getDatabase().getEquipped(player.getUniqueId(), equipped -> {
+
+            Boots currentBoots = Boots.getBootsByPlayer(player);
+            Boots equippedBoots = null;
+
+            for (Gadget gadget : equipped) {
+                if (gadget instanceof Boots) {
+                    equippedBoots = (Boots) gadget;
+                }
+            }
+
+            if (equippedBoots != null) {
+                equippedBoots.equip(player);
+                return;
+            }
+
+            if (currentBoots != null) {
+                player.getInventory().setBoots(null);
+            }
+        });
     }
 }

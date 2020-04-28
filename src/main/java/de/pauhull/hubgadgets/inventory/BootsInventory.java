@@ -32,22 +32,22 @@ public class BootsInventory implements GadgetInventory {
 
         Configuration config = hubGadgets.getConfiguration();
 
-        this.title = config.getString("BootsInventory.Title");
+        this.title = config.getString("Boots.Title");
     }
 
     public void show(Player player) {
 
         Inventory inventory = Bukkit.createInventory(null, 27, title);
 
-        this.updateInventory(inventory, player);
-
-        player.openInventory(inventory);
-        player.playSound(player.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1, 1);
+        this.updateInventory(inventory, player, () -> {
+            player.openInventory(inventory);
+            player.playSound(player.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 1, 1);
+        });
     }
 
-    private void updateInventory(Inventory inventory, Player player) {
+    private void updateInventory(Inventory inventory, Player player, Runnable callback) {
 
-        Boots selectedBoots = Boots.getBoots(player);
+        Boots selectedBoots = Boots.getBootsByPlayer(player);
 
         hubGadgets.getDatabase().getGadgets(player.getUniqueId(), gadgets -> {
             Bukkit.getScheduler().runTask(hubGadgets, () -> { // synchronous
@@ -66,6 +66,8 @@ public class BootsInventory implements GadgetInventory {
                         }
                     }
                 }
+
+                callback.run();
             });
         });
     }
@@ -85,18 +87,18 @@ public class BootsInventory implements GadgetInventory {
 
         if (stack != null) {
 
-            Boots boots = Boots.getBoots(stack);
+            Boots boots = Boots.getBootsByItem(stack);
 
             if (boots != null) {
 
                 if (stack.equals(boots.getBoughtItem())) {
 
                     boots.equip(player);
-                    updateInventory(inventory, player);
+                    updateInventory(inventory, player, player::updateInventory);
                 } else if (stack.equals(boots.getSelectedItem())) {
 
                     Boots.unequip(player);
-                    updateInventory(inventory, player);
+                    updateInventory(inventory, player, player::updateInventory);
                 } else if (stack.equals(boots.getUnboughtItem())) {
 
                     hubGadgets.getBuyInventory().show(player, boots);

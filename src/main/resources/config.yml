@@ -1,4 +1,5 @@
-# MySQL config
+DatabaseType: "SQLite"
+
 MySQL:
   SSL: false
   Host: "127.0.0.1"
@@ -6,6 +7,9 @@ MySQL:
   Database: "database"
   User: "root"
   Password: ""
+
+SQLite:
+  File: "database.db"
 
 # Language & Price config
 Prefix: "&5&lGadgets&8&l »&7 "
@@ -35,7 +39,7 @@ MainInventory:
     Skulls: "&eKöpfe"
     Ranks: "&6Ränge"
 
-BootsInventory:
+Boots:
   Title: "&2&lSchuhe"
   Item:
     EmeraldBoots:
@@ -73,3 +77,5 @@ BootsInventory:
       Price:
         Type: COINS
         Value: 0
+
+Pets:

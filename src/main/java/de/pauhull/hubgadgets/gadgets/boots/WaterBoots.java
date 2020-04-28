@@ -5,7 +5,7 @@ package de.pauhull.hubgadgets.gadgets.boots;
 // Package de.pauhull.hubgadgets.gadgets.boots
 
 import org.bukkit.Color;
-import org.bukkit.Effect;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 public class WaterBoots extends Boots {
@@ -18,7 +18,7 @@ public class WaterBoots extends Boots {
     @Override
     public void playEffect(Player player) {
 
-        player.getWorld().playEffect(player.getLocation(), Effect.WATERDRIP, 0);
+        player.getWorld().spawnParticle(Particle.WATER_SPLASH, player.getLocation(), 0);
     }
 
 }

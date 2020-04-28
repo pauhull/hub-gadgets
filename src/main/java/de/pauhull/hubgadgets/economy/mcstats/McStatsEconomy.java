@@ -7,7 +7,7 @@ package de.pauhull.hubgadgets.economy.mcstats;
 import de.pauhull.hubgadgets.HubGadgets;
 import de.pauhull.hubgadgets.economy.Economy;
 import net.mcstats2.core.MCSCore;
-import net.mcstats2.core.api.MCSEntity.MCSPlayer;
+import net.mcstats2.core.api.mcsentity.player.MCSPlayer;
 import net.mcstats2.mcmoney.manager.MCMoneyManager;
 
 import java.util.UUID;

@@ -7,7 +7,8 @@ package de.pauhull.hubgadgets;
 import de.pauhull.hubgadgets.command.GadgetsCommand;
 import de.pauhull.hubgadgets.config.Configuration;
 import de.pauhull.hubgadgets.data.Database;
-import de.pauhull.hubgadgets.data.mysql.MySQLDatabase;
+import de.pauhull.hubgadgets.data.sql.mysql.MySQLDatabase;
+import de.pauhull.hubgadgets.data.sql.sqlite.SQLiteDatabase;
 import de.pauhull.hubgadgets.economy.Economy;
 import de.pauhull.hubgadgets.economy.mcstats.McStatsEconomy;
 import de.pauhull.hubgadgets.gadgets.Gadget;
@@ -53,8 +54,13 @@ public class HubGadgets extends JavaPlugin {
         this.bootsInventory = new BootsInventory(this);
         this.bootsManager = new BootsManager(this);
         this.buyInventory = new BuyInventory(this);
-        this.database = new MySQLDatabase(this);
         this.economy = new McStatsEconomy(this);
+
+        if (configuration.getString("DatabaseType").equalsIgnoreCase("SQLite")) {
+            this.database = new SQLiteDatabase(this);
+        } else {
+            this.database = new MySQLDatabase(this);
+        }
 
         new GadgetsCommand(this);
     }
@@ -62,6 +68,7 @@ public class HubGadgets extends JavaPlugin {
     @Override
     public void onDisable() {
 
+        this.database.close();
         this.scheduler.shutdown();
         this.executorService.shutdown();
     }

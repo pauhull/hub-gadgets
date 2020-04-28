@@ -42,9 +42,9 @@ public abstract class Boots implements Gadget {
         boots.add(this);
 
         Price.Type type = Price.Type.valueOf(HubGadgets.getInstance().getConfiguration()
-                .getString("BootsInventory.Item." + configName + ".Price.Type"));
+                .getString("Boots.Item." + configName + ".Price.Type"));
         double value = HubGadgets.getInstance().getConfiguration()
-                .getDouble("BootsInventory.Item." + configName + ".Price.Value");
+                .getDouble("Boots.Item." + configName + ".Price.Value");
         this.price = new Price(type, value);
 
         this.item = buildItem(color, configName);
@@ -54,7 +54,7 @@ public abstract class Boots implements Gadget {
         this.gadgetInventory = HubGadgets.getInstance().getBootsInventory();
     }
 
-    public static Boots getBoots(ItemStack stack) {
+    public static Boots getBootsByItem(ItemStack stack) {
 
         if (stack == null) {
             return null;
@@ -69,12 +69,27 @@ public abstract class Boots implements Gadget {
         return null;
     }
 
-    public static Boots getBoots(Player player) {
+    public static Boots getBootsByName(String className) {
 
-        return getBoots(player.getInventory().getBoots());
+        for (Boots boots : boots) {
+            if (boots.getClass().getSimpleName().equalsIgnoreCase(className)) {
+                return boots;
+            }
+        }
+
+
+        return null;
+    }
+
+    public static Boots getBootsByPlayer(Player player) {
+
+        return getBootsByItem(player.getInventory().getBoots());
     }
 
     public static void unequip(Player player) {
+
+        Boots boots = getBootsByPlayer(player);
+        HubGadgets.getInstance().getDatabase().unequipGadget(player.getUniqueId(), boots);
 
         player.getInventory().setBoots(null);
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
@@ -86,10 +101,10 @@ public abstract class Boots implements Gadget {
 
         if (player.getInventory().getBoots() != null) {
 
-            Boots boots = getBoots(player);
+            Boots boots = getBootsByPlayer(player);
 
             if (boots != null) {
-                player.getInventory().setBoots(null);
+                unequip(player);
                 equip(player);
                 return;
             }
@@ -101,6 +116,8 @@ public abstract class Boots implements Gadget {
 
         player.getInventory().setBoots(getItem());
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
+
+        HubGadgets.getInstance().getDatabase().equipGadget(player.getUniqueId(), this);
     }
 
     protected boolean isItem(ItemStack stack) {
@@ -115,7 +132,7 @@ public abstract class Boots implements Gadget {
 
         return new ItemBuilder(Material.LEATHER_BOOTS)
                 .leatherColor(leatherColor)
-                .displayName(HubGadgets.getInstance().getConfiguration().getString("BootsInventory.Item." + configName + ".Name"))
+                .displayName(HubGadgets.getInstance().getConfiguration().getString("Boots.Item." + configName + ".Name"))
                 .unbreakable(true)
                 .flag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE)
                 .build();
