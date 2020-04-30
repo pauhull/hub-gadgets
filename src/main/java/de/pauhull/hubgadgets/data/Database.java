@@ -5,6 +5,7 @@ package de.pauhull.hubgadgets.data;
 // Package de.pauhull.hubgadgets.data
 
 import de.pauhull.hubgadgets.gadgets.Gadget;
+import de.pauhull.hubgadgets.gadgets.pets.Pet;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +26,10 @@ public interface Database {
     void isEquipped(UUID uuid, Gadget gadget, Consumer<Boolean> consumer);
 
     void getEquipped(UUID uuid, Consumer<List<Gadget>> consumer);
+
+    void getPetName(UUID uuid, Pet pet, Consumer<String> consumer);
+
+    void setPetName(UUID uuid, Pet pet, String name);
 
     void close();
 

@@ -1,4 +1,4 @@
-package de.pauhull.hubgadgets.inventory;
+package de.pauhull.hubgadgets.inventory.gadget;
 
 // Project: hub-gadgets
 // Class created on 25.03.2020 by Paul

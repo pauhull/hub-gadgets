@@ -5,7 +5,7 @@ package de.pauhull.hubgadgets.data.sql.table;
 // Package de.pauhull.hubgadgets.data.sql.table
 
 import de.pauhull.hubgadgets.HubGadgets;
-import de.pauhull.hubgadgets.data.sql.SQLDatabase;
+import de.pauhull.hubgadgets.data.sql.HikariSQLDatabase;
 import de.pauhull.hubgadgets.gadgets.Gadget;
 
 import java.sql.PreparedStatement;
@@ -21,10 +21,10 @@ public class EquippedTable {
 
     private static final String TABLE = "gadgets_equipped";
 
-    private SQLDatabase database;
+    private HikariSQLDatabase database;
     private ExecutorService executorService;
 
-    public EquippedTable(SQLDatabase database, ExecutorService executorService) {
+    public EquippedTable(HikariSQLDatabase database, ExecutorService executorService) {
 
         this.database = database;
         this.executorService = executorService;
@@ -36,17 +36,7 @@ public class EquippedTable {
 
         executorService.execute(() -> {
 
-            try {
-                PreparedStatement statement = database.prepare("INSERT INTO `" + TABLE + "` VALUES (0, ?, ?)");
-                statement.setString(1, uuid.toString());
-                statement.setString(2, gadget.getClass().getSimpleName());
-                statement.executeUpdate();
-                statement.close();
-                statement.getConnection().close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            database.update("INSERT INTO `" + TABLE + "` VALUES (0, '" + uuid.toString() + "', '" + gadget.getName() + "')");
         });
     }
 
@@ -54,17 +44,7 @@ public class EquippedTable {
 
         executorService.execute(() -> {
 
-            try {
-                PreparedStatement statement = database.prepare("DELETE FROM `" + TABLE + "` WHERE `uuid`=? AND `gadget`=?");
-                statement.setString(1, uuid.toString());
-                statement.setString(2, gadget.getClass().getSimpleName());
-                statement.executeUpdate();
-                statement.close();
-                statement.getConnection().close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            database.update("DELETE FROM `" + TABLE + "` WHERE `uuid`='" + uuid.toString() + "' AND `gadget`='" + gadget.getName() + "'");
         });
     }
 
@@ -77,13 +57,12 @@ public class EquippedTable {
             try {
                 PreparedStatement statement = database.prepare("SELECT * FROM `" + TABLE + "` WHERE `uuid`=?");
                 statement.setString(1, uuid.toString());
-
                 ResultSet resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {
                     String gadgetName = resultSet.getString("gadget");
                     for (Gadget gadget : HubGadgets.getInstance().getGadgets()) {
-                        if (gadget.getClass().getSimpleName().equalsIgnoreCase(gadgetName)) {
+                        if (gadget.getName().equalsIgnoreCase(gadgetName)) {
                             gadgets.add(gadget);
                         }
                     }

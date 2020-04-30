@@ -5,7 +5,7 @@ package de.pauhull.hubgadgets.data.sql.table;
 // Package de.pauhull.hubgadgets.data.sql.mysql
 
 import de.pauhull.hubgadgets.HubGadgets;
-import de.pauhull.hubgadgets.data.sql.SQLDatabase;
+import de.pauhull.hubgadgets.data.sql.HikariSQLDatabase;
 import de.pauhull.hubgadgets.gadgets.Gadget;
 
 import java.sql.PreparedStatement;
@@ -21,10 +21,11 @@ public class GadgetTable {
 
     private static final String TABLE = "gadgets";
 
-    private SQLDatabase database;
+    private HikariSQLDatabase database;
     private ExecutorService executorService;
 
-    public GadgetTable(SQLDatabase database, ExecutorService executorService) {
+    public GadgetTable(HikariSQLDatabase database, ExecutorService executorService) {
+
         this.database = database;
         this.executorService = executorService;
 
@@ -38,7 +39,7 @@ public class GadgetTable {
             try {
                 PreparedStatement statement = database.prepare("INSERT INTO `" + TABLE + "` VALUES(0, ?, ?)");
                 statement.setString(1, uuid.toString());
-                statement.setString(2, gadget.getClass().getSimpleName());
+                statement.setString(2, gadget.getName());
                 statement.executeUpdate();
                 statement.close();
                 statement.getConnection().close();
@@ -63,7 +64,7 @@ public class GadgetTable {
                     String gadgetName = result.getString("gadget");
 
                     for (Gadget gadget : HubGadgets.getInstance().getGadgets()) {
-                        if (gadget.getClass().getSimpleName().equals(gadgetName)) {
+                        if (gadget.getName().equals(gadgetName)) {
                             gadgets.add(gadget);
                         }
                     }

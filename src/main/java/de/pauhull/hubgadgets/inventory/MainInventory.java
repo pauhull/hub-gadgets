@@ -89,9 +89,16 @@ public class MainInventory implements Listener {
 
         event.setCancelled(true);
 
+        if (stack == null) {
+            return;
+        }
+
         if (boots.equals(stack)) {
 
             hubGadgets.getBootsInventory().show(player);
+        } else if (pets.getType() == stack.getType()) {
+
+            hubGadgets.getPetInventory().show(player);
         }
     }
 

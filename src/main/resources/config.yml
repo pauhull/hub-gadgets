@@ -1,4 +1,4 @@
-DatabaseType: "SQLite"
+DatabaseType: "MySQL"
 
 MySQL:
   SSL: false
@@ -19,8 +19,10 @@ ClickToUnselect: "\n&a&lAusgewählt\n&7Klicken, um abzuwählen\n "
 ClickToBuy: "\n&7Dieses Gadget für &e%PRICE%&7 kaufen?\n "
 Free: "&a&lKostenlos"
 Bought: "&a&lGekauft"
+Premium: "&6&lPremium Gadget"
 NotEnoughMoney: "&cDir fehlen %MISSING%"
 SuccessfullyBought: "&aGadget erfolgreich gekauft"
+NoPermission: "&cDazu hast du keine Rechte!"
 
 BuyInventory:
   Title: "&9&lGadget kaufen?"
@@ -44,38 +46,81 @@ Boots:
   Item:
     EmeraldBoots:
       Name: "&aEmerald Boots"
+      Permission: ""
       Price:
         Type: COINS
         Value: 0
     EnderBoots:
       Name: "&5Ender Boots"
+      Permission: ""
       Price:
         Type: COINS
         Value: 0
     HeartBoots:
       Name: "&4Heart Boots"
+      Permission: ""
       Price:
         Type: COINS
         Value: 0
     LavaBoots:
       Name: "&cLava Boots"
+      Permission: ""
       Price:
         Type: COINS
         Value: 0    L
     RainbowBoots:
       Name: "&4&lR&c&la&6&li&e&ln&2&lb&a&lo&b&lw&r &3&lB&9&lo&d&lo&5&lt&4&ls"
+      Permission: "gadgets.rainbowboots"
       Price:
         Type: CREDITS
         Value: 0
     PotionBoots:
       Name: "&3Potion Boots"
+      Permission: ""
       Price:
         Type: COINS
         Value: 0
     WaterBoots:
       Name: "&9Water Boots"
+      Permission: ""
       Price:
         Type: COINS
         Value: 0
 
 Pets:
+  Rename: "&6Umbenennen"
+  Remove: "&cEntfernen"
+  Title: "&aHaustiere"
+  Item:
+    Pig:
+      Name: "&cSchwein"
+      EntityType: PIG
+      Baby: True
+      Permission: "gadgets.pig"
+      Price:
+        Type: COINS
+        Value: 0
+    Cow:
+      Name: "&6Kuh"
+      EntityType: COW
+      Baby: True
+      Permission: ""
+      Price:
+        Type: COINS
+        Value: 0
+    Cat:
+      Name: "&dKatze"
+      EntityType: OCELOT
+      Baby: False
+      Permission: ""
+      Price:
+        Type: COINS
+        Value: 0
+    Dog:
+      Name: "&9Hund"
+      EntityType: WOLF
+      Baby: False
+      Permission: ""
+      Price:
+        Type: COINS
+        Value: 0

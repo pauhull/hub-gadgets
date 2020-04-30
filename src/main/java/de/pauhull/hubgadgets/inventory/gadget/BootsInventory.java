@@ -1,4 +1,4 @@
-package de.pauhull.hubgadgets.inventory;
+package de.pauhull.hubgadgets.inventory.gadget;
 
 // Project: hub-gadgets
 // Class created on 24.03.2020 by Paul
@@ -93,12 +93,20 @@ public class BootsInventory implements GadgetInventory {
 
                 if (stack.equals(boots.getBoughtItem())) {
 
+                    if (boots.isPremium() && !player.hasPermission(boots.getPermission())) {
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BASS, 1, 1);
+                        player.sendMessage(HubGadgets.getInstance().getConfiguration().getStringWithPrefix("NoPermission"));
+                        return;
+                    }
+
                     boots.equip(player);
                     updateInventory(inventory, player, player::updateInventory);
+                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
                 } else if (stack.equals(boots.getSelectedItem())) {
 
                     Boots.unequip(player);
                     updateInventory(inventory, player, player::updateInventory);
+                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
                 } else if (stack.equals(boots.getUnboughtItem())) {
 
                     hubGadgets.getBuyInventory().show(player, boots);

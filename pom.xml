@@ -17,9 +17,19 @@
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.github.WesJD</groupId>
+            <artifactId>AnvilGUI</artifactId>
+            <version>988981dd50</version>
+        </dependency>
 
         <dependency>
             <groupId>net.mcstats2</groupId>
@@ -35,10 +45,16 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--Spigot API-->
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
-            <artifactId>paper-api</artifactId>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>

@@ -7,12 +7,11 @@ package de.pauhull.hubgadgets.gadgets.boots;
 import de.pauhull.hubgadgets.HubGadgets;
 import de.pauhull.hubgadgets.gadgets.Gadget;
 import de.pauhull.hubgadgets.gadgets.Price;
-import de.pauhull.hubgadgets.inventory.GadgetInventory;
+import de.pauhull.hubgadgets.inventory.gadget.GadgetInventory;
 import de.pauhull.hubgadgets.util.ItemBuilder;
 import lombok.Getter;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -22,18 +21,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Getter
 public abstract class Boots implements Gadget {
 
     @Getter
     private static List<Boots> boots = new ArrayList<>();
 
-    @Getter
     protected ItemStack item, selectedItem, boughtItem, unboughtItem;
-
-    @Getter
     protected Price price;
-
-    @Getter
+    private String permission;
+    private String configName;
     private GadgetInventory gadgetInventory;
 
     Boots(Color color, String configName) {
@@ -46,7 +43,9 @@ public abstract class Boots implements Gadget {
         double value = HubGadgets.getInstance().getConfiguration()
                 .getDouble("Boots.Item." + configName + ".Price.Value");
         this.price = new Price(type, value);
+        this.permission = HubGadgets.getInstance().getConfiguration().getString("Boots.Item." + configName + ".Permission");
 
+        this.configName = configName;
         this.item = buildItem(color, configName);
         this.selectedItem = buildSelectedItem();
         this.boughtItem = buildBoughtItem();
@@ -92,7 +91,6 @@ public abstract class Boots implements Gadget {
         HubGadgets.getInstance().getDatabase().unequipGadget(player.getUniqueId(), boots);
 
         player.getInventory().setBoots(null);
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
     }
 
     abstract public void playEffect(Player player);
@@ -115,7 +113,6 @@ public abstract class Boots implements Gadget {
         }
 
         player.getInventory().setBoots(getItem());
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
 
         HubGadgets.getInstance().getDatabase().equipGadget(player.getUniqueId(), this);
     }
@@ -162,13 +159,31 @@ public abstract class Boots implements Gadget {
 
     protected ItemStack buildBoughtItem() {
 
+        String status;
+        if (!permission.equals("")) {
+            status = HubGadgets.getInstance().getConfiguration().getString("Premium");
+        } else {
+            if (price.getValue() == 0) {
+                status = HubGadgets.getInstance().getConfiguration().getString("Free");
+            } else {
+                status = HubGadgets.getInstance().getConfiguration().getString("Bought");
+            }
+        }
         return new ItemBuilder(getItem())
                 .lore(HubGadgets.getInstance().getConfiguration()
                         .getString("ClickToSelect")
-                        .replace("%STATUS%", HubGadgets.getInstance().getConfiguration()
-                                .getString(price.getValue() == 0 ? "Free" : "Bought"))
+                        .replace("%STATUS%", status)
                         .split("\n"))
                 .build();
     }
 
+    @Override
+    public String getName() {
+        return configName;
+    }
+
+    @Override
+    public boolean isPremium() {
+        return !permission.equals("");
+    }
 }

@@ -71,8 +71,11 @@ public class ItemBuilder {
 
     public ItemBuilder spawnEgg(EntityType entityType) {
 
+        stack.setItemMeta(itemMeta);
         stack.setType(Material.MONSTER_EGG);
-        return durability(entityType.getTypeId());
+        stack.setDurability(entityType.getTypeId());
+        itemMeta = stack.getItemMeta();
+        return this;
     }
 
     public ItemBuilder skull(String skullOwner) {
