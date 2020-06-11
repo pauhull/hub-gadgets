@@ -16,8 +16,10 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
@@ -106,14 +108,14 @@ public class PetManager implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteractAtEnttiy(PlayerInteractAtEntityEvent event) {
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
 
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
 
         PetInfo petInfo = Pet.getPetByPlayer(player);
 
-        if (!player.isSneaking() && petInfo != null && petInfo.getEntity() == entity) {
+        if (player.isSneaking() && petInfo != null && petInfo.getEntity() == entity) {
             event.setCancelled(true);
             HubGadgets.getInstance().getPetRenameInventory().show(player);
         }
@@ -135,5 +137,22 @@ public class PetManager implements Listener {
 
         Player player = event.getPlayer();
         Pet.despawn(player);
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        Villager villager = (Villager) player.getWorld().spawnEntity(player.getLocation(), EntityType.VILLAGER);
+        villager.setBaby();
+        villager.setVelocity(player.getLocation().getDirection().multiply(5));
+
+        Bukkit.getScheduler().runTaskLater(HubGadgets.getInstance(), () -> {
+            villager.getWorld().createExplosion(villager.getLocation(), 5f);
+        }, 20);
     }
 }

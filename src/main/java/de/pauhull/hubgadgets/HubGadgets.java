@@ -11,7 +11,6 @@ import de.pauhull.hubgadgets.data.sql.mysql.HikariMySQLDatabase;
 import de.pauhull.hubgadgets.data.sql.sqlite.HikariSQLiteDatabase;
 import de.pauhull.hubgadgets.economy.Economy;
 import de.pauhull.hubgadgets.economy.mcstats.McStatsEconomy;
-import de.pauhull.hubgadgets.entity.SilverfishBalloon;
 import de.pauhull.hubgadgets.gadgets.Gadget;
 import de.pauhull.hubgadgets.gadgets.boots.BootsManager;
 import de.pauhull.hubgadgets.gadgets.pets.PetManager;
@@ -20,7 +19,6 @@ import de.pauhull.hubgadgets.inventory.MainInventory;
 import de.pauhull.hubgadgets.inventory.PetRenameInventory;
 import de.pauhull.hubgadgets.inventory.gadget.BootsInventory;
 import de.pauhull.hubgadgets.inventory.gadget.PetInventory;
-import de.pauhull.hubgadgets.util.CustomEntityRegistry;
 import de.pauhull.hubgadgets.util.SwearwordFilter;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -76,11 +74,24 @@ public class HubGadgets extends JavaPlugin {
             this.database = new HikariMySQLDatabase(this);
         }
 
+        /*
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                Vector vector = player.getVelocity();
+                if(vector.getY() < 0) {
+                    vector.multiply(new Vector(0, 0.5, 0));
+                }
+                player.setVelocity(vector);
+            }
+
+        }, 1, 1);
+
+
+         */
         new GadgetsCommand(this);
 
         petManager.removeAllPets();
-
-        CustomEntityRegistry.registerCustomEntity(500, "silverfish_balloon", SilverfishBalloon.class);
     }
 
     @Override

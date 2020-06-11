@@ -5,14 +5,17 @@ package de.pauhull.hubgadgets.command;
 // Package de.pauhull.hubgadgets.command
 
 import de.pauhull.hubgadgets.HubGadgets;
-import de.pauhull.hubgadgets.entity.SilverfishBalloon;
-import net.minecraft.server.v1_12_R1.EnumMoveType;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 public class GadgetsCommand implements CommandExecutor {
 
@@ -33,20 +36,54 @@ public class GadgetsCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        SilverfishBalloon silverfishBalloon = new SilverfishBalloon(player.getWorld());
-        silverfishBalloon.setPosition(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+        Silverfish silverfish = (Silverfish) player.getWorld().spawnEntity(player.getLocation(), EntityType.SILVERFISH);
+        silverfish.setSilent(true);
+        silverfish.setInvulnerable(true);
+        silverfish.setLeashHolder(player);
+        silverfish.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
 
-        silverfishBalloon.setLeashHolder(((CraftPlayer) player).getHandle(), true);
+        FallingBlock fallingBlock = player.getWorld().spawnFallingBlock(player.getLocation(), Material.WOOL, (byte) (Math.random() * 16));
+        fallingBlock.setDropItem(false);
+        fallingBlock.setGravity(false);
+        fallingBlock.setHurtEntities(false);
+        silverfish.addPassenger(fallingBlock);
 
-        Bukkit.getScheduler().runTaskTimer(hubGadgets, () -> {
-            if (silverfishBalloon.getLeashHolder() == null) {
-                silverfishBalloon.killEntity();
+        Runnable runnable = () -> {
+
+            if (silverfish.isDead()) {
                 return;
             }
 
-            silverfishBalloon.move(EnumMoveType.SELF, 0, 0.2, 0);
-            silverfishBalloon.fallDistance = 0;
-        }, 2, 2);
+            if (!silverfish.isLeashed() || silverfish.getPassengers().size() == 0) {
+
+                silverfish.getWorld().playSound(silverfish.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
+                silverfish.getWorld().spawnParticle(Particle.CLOUD, silverfish.getLocation(), 0);
+
+                for (Entity e : silverfish.getPassengers()) e.remove();
+                silverfish.remove();
+                return;
+            }
+
+            for (Entity e : silverfish.getPassengers()) e.setTicksLived(1);
+
+            Vector vector = silverfish.getVelocity();
+            vector.setY(0.2);
+            silverfish.setVelocity(vector);
+
+            Vector pushAwayVector = new Vector();
+            for (Entity nearby : silverfish.getNearbyEntities(1.5, 1.5, 1.5)) {
+                pushAwayVector.setX(pushAwayVector.getX() + nearby.getLocation().getX() - silverfish.getLocation().getX());
+                pushAwayVector.setZ(pushAwayVector.getZ() + nearby.getLocation().getZ() - silverfish.getLocation().getZ());
+            }
+            pushAwayVector.normalize().multiply(-0.01);
+            Vector newVelocity = silverfish.getVelocity();
+            newVelocity.add(pushAwayVector);
+            silverfish.setVelocity(newVelocity);
+
+            silverfish.setFallDistance(0);
+        };
+
+        Bukkit.getScheduler().runTaskTimer(hubGadgets, runnable, 2, 2);
 
         hubGadgets.getMainInventory().show(player);
 

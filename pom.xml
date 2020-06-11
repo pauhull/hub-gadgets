@@ -26,6 +26,13 @@
     <dependencies>
 
         <dependency>
+            <groupId>net.mcstats2</groupId>
+            <artifactId>MCPerms</artifactId>
+            <version>1.3</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.WesJD</groupId>
             <artifactId>AnvilGUI</artifactId>
             <version>988981dd50</version>

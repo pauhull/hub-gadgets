@@ -124,3 +124,15 @@ Pets:
       Price:
         Type: COINS
         Value: 0
+
+Ranks:
+  Holz:
+    Type: RANK
+    Name: "&6Holz"
+    Material: LOG
+    Seconds: 30
+    GroupID: "414b651b8457427da6c42b7f31b37c5105b9022e"
+  Test:
+    Type: PERMISSION
+    Name: "Test Permission"
+    dd
